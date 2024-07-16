@@ -2,9 +2,9 @@ from unittest import TextTestRunner, TestSuite, TestResult
 
 from thinking_tests.adapter import adapt
 from thinking_tests.protocol import ThinkingCase
-from thinking_tests.runner.protocol import ThinkingRunnerProtocol
+from thinking_tests.runner.protocol import ThinkingTestRunner
 
-class UnittestRunner(ThinkingRunnerProtocol):
+class UnittestRunner(ThinkingTestRunner):
     def __init__(self, unittest_runner = None):
         self.backend = unittest_runner or TextTestRunner()
 

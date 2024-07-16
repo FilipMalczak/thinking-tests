@@ -6,7 +6,7 @@ from thinking_tests.protocol import ThinkingCase
 
 BackendResultType = TypeVar("BackendResultType")
 
-class ThinkingRunnerProtocol:
+class ThinkingTestRunner:
     @abstractmethod
     def execute(self, cases: list[ThinkingCase]) -> BackendResultType: pass
 

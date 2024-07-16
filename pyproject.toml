@@ -21,7 +21,8 @@ dependencies = [
 requires-python = ">=3.11"
 
 [project.urls]
-Homepage = "https://github.com/FilipMalczak/thinking-tests
+Homepage = "https://github.com/FilipMalczak/thinking-tests"
 
 [tool.setuptools]
-packages = ["thiking_tests"]
+#todo remember to keep this up to date
+packages = ["thinking_tests", "thinking_tests.aspect", "thinking_tests.runner"]
