@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thinking-tests"
-version = "0.0.1"
+version = "0.0.2"
 description = "Declarative API over unittest with customizable auto-disovery and test lifecycle"
 readme = "README.md"
 authors = [{ name = "Filip Malczak", email = "filip.malczak@gmail.com" }]
