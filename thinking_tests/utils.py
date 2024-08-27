@@ -1,11 +1,30 @@
 import inspect
 import sys
-from os.path import join, exists
+from os.path import join, exists, basename, dirname
 
 from recursive_import import _abs_dirname
+from thinking_modules.model import ModuleName
+
 
 def main_module():
     return sys.modules["__main__"]
+
+
+#todo belongs to thinking-modules
+def main_module_real_name() -> ModuleName:
+    main = sys.modules["__main__"]
+    try:
+        main_file = main.__file__
+    except AttributeError:
+        raise NotImplementedError("main_module_real_name() doesn't cover shell sessions")
+    assert main_file.endswith(".py")  # todo msg
+    name_parts = [basename(main_file)[:-len(".py")]]
+    parent_dir = dirname(main_file)
+    while exists(join(parent_dir, "__init__.py")):
+        name_parts = [basename(parent_dir)] + name_parts
+        parent_dir = dirname(parent_dir)
+    return ModuleName(name_parts)
+
 
 def root_pkg(path: str = None) -> str:
     abs_path = _abs_dirname(path or main_module().__file__)
