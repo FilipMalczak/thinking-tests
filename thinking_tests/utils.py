@@ -2,7 +2,7 @@ import inspect
 import sys
 from os.path import join, exists, basename, dirname
 
-from recursive_import import _abs_dirname
+from thinking_modules.importing import _abs_dirname
 from thinking_modules.model import ModuleName
 
 

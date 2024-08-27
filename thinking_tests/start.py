@@ -1,6 +1,6 @@
 from typing import Callable
 
-from recursive_import import import_package_recursively
+from thinking_modules.importing import import_package_recursively
 from thinking_modules.model import ModuleName
 
 from thinking_tests.decorators import KNOWN_CASES
