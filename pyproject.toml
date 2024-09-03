@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "thinking-tests"
-version = "0.0.3"
+version = "0.0.4"
 description = "Declarative API over unittest with customizable auto-discovery, test lifecycle and handy integrations"
 readme = "README.md"
 authors = [{ name = "Filip Malczak", email = "filip.malczak@gmail.com" }]
@@ -19,7 +19,7 @@ dependencies = [
     "thinking-modules>=0.0.4",
     "thinking-runtime>=0.0.3",
     "coverage>=7.6.1",
-    "jinja2>3.1.4"
+    "jinja2>=3.1.4"
 ]
 requires-python = ">=3.12"
 
