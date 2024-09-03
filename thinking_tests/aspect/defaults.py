@@ -1,11 +1,14 @@
 import traceback
-from contextlib import contextmanager
+from contextlib import contextmanager, redirect_stdout, redirect_stderr
+from datetime import datetime
+from io import StringIO
 from logging import getLogger
 from typing import ContextManager, Protocol
 
 from thinking_tests.aspect.protocol import TestAspect
 from thinking_tests.current import test_stage
 from thinking_tests.protocol import TestStage, ThinkingCase, CaseCoordinates
+from thinking_tests.running.capture_logs import LogCapturer
 
 
 class MetadataMountingAspect(TestAspect):
@@ -13,6 +16,32 @@ class MetadataMountingAspect(TestAspect):
     def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
         with test_stage(case.coordinates, stage):
             yield
+
+
+class DetailsCapturingAspect(TestAspect):
+    @contextmanager
+    def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
+        exec_details = case.execution_details[stage]
+        stdout = StringIO()
+        stderr = StringIO()
+        with redirect_stdout(stdout), redirect_stderr(stderr):
+            try:
+                LogCapturer.INSTANCE.reset()
+                exec_details.started_at = datetime.now()
+                yield
+            except Exception as e:
+                exec_details.exception = e
+                raise
+            finally:
+                exec_details.finished_at = datetime.now()
+                exec_details.stdout = stdout.getvalue()
+                stdout.close()
+                exec_details.stderr = stderr.getvalue()
+                stderr.close()
+                exec_details.logs = LogCapturer.INSTANCE.get_data()
+                LogCapturer.INSTANCE.reset()
+        # if stage == TestStage.TEARDOWN:
+        #     case.execution_details = dict(case.execution_details)
 
 
 class LogFormatter:
@@ -60,7 +89,7 @@ BEFORE_AFTER_LOG_FORMATER = LogFormatter()
 class LoggingAspect(TestAspect):
     @contextmanager
     def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
-        logger = getLogger(case.coordinates.module_name)
+        logger = getLogger(case.coordinates.module_name.qualified)
         fmt = BEFORE_AFTER_LOG_FORMATER
         try:
             fmt.log_header(logger, fmt.make_header(case.coordinates, stage))
@@ -71,7 +100,10 @@ class LoggingAspect(TestAspect):
                 fmt.log_footer(logger, False, line)
             raise
 
+
+
 DEFAULT_ASPECTS = [
     MetadataMountingAspect(),
+    DetailsCapturingAspect(),
     LoggingAspect()
 ]

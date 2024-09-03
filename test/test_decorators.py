@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from thinking_modules.model import ModuleName
+
 from thinking_tests.decorators import case, setup, teardown, KNOWN_CASES
 from thinking_tests.protocol import ThinkingCase
 from thinking_tests.simple import SimpleThinkingCase
@@ -66,7 +68,8 @@ def unpack(c: ThinkingCase) -> tuple[str]:
 
 class DecoratorTests(TestCase):
     def setUp(self):
-        self.cases = [x for x in KNOWN_CASES if x.coordinates.module_name == __name__]
+        #todo ModuleName.__eq__ should allow for str
+        self.cases = [x for x in KNOWN_CASES if x.coordinates.module_name == ModuleName.of(__name__)]
 
     def test_number_of_discovered_is_correct(self):
         self.assertEqual(9, len(self.cases))

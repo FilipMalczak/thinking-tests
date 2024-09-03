@@ -1,8 +1,7 @@
 import inspect
 import sys
-from os.path import join, exists, basename, dirname
+from os.path import join, exists, basename, dirname, abspath
 
-from thinking_modules.importing import _abs_dirname
 from thinking_modules.model import ModuleName
 
 
@@ -27,7 +26,7 @@ def main_module_real_name() -> ModuleName:
 
 
 def root_pkg(path: str = None) -> str:
-    abs_path = _abs_dirname(path or main_module().__file__)
+    abs_path = abspath(dirname(path or main_module().__file__))
     shallowest_module = None
     while exists(join(abs_path, "__init__.py")):
         abs_path, slash, shallowest_module = abs_path.rpartition("/")

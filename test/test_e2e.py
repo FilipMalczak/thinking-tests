@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock, call
 
+from thinking_modules.model import ModuleName
+
 from thinking_tests.current import current_stage, current_case
 from thinking_tests.decorators import case
 from thinking_tests.protocol import ThinkingCase, CaseCoordinates, TestStage
@@ -10,8 +12,8 @@ from thinking_tests.protocol import ThinkingCase, CaseCoordinates, TestStage
 class NoArgsE2e(TestCase):
     def setUp(self):
         self.name = "NAME"
-        self.coordinates = CaseCoordinates(__name__, self.name)
-        # self.coordinates = CaseCoordinates(__name__, self.name, 29) #keep 30 up to date with line number of decorator on def body()
+        # self.coordinates = CaseCoordinates(__name__, self.name)
+        self.coordinates = CaseCoordinates(ModuleName.of(__name__), self.name, 32) #keep 32 up to date with line number of decorator on def body()
         self.mock = Mock()
         self.raise_in_stages = {}
         self.exceptions = []

@@ -16,13 +16,15 @@ classifiers = [
 ]
 keywords = ["test", "thinking"]
 dependencies = [
-    "thinking-modules>=0.0.1"
+    "thinking-modules>=0.0.3"
 ]
 requires-python = ">=3.12"
 
 [project.urls]
 Homepage = "https://github.com/FilipMalczak/thinking-tests"
 
+
+#TODO make sure that vjunit template.html gets packaged
 [tool.setuptools]
 #todo remember to keep this up to date
 packages = ["thinking_tests", "thinking_tests.aspect", "thinking_tests.runner"]

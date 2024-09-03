@@ -1,5 +1,8 @@
+import random
 from contextlib import contextmanager
 from unittest import TestCase
+
+from thinking_modules.model import ModuleName
 
 import thinking_tests.aspect.custom
 from thinking_tests.aspect.weaving import AspectWeaver
@@ -24,6 +27,7 @@ class TestCaseAspects(TestCase):
         self.accumulator = []
         self.setup = {"s": 1}
         self.failure = False
+        self.result = random.randint(0, 0xC0FFEE)
         def s():
             self.accumulator.append(["SETUP", current_coordinates(), current_stage()])
             return self.setup
@@ -31,9 +35,10 @@ class TestCaseAspects(TestCase):
         def b(setup):
             self.accumulator.append(["BODY", current_coordinates(), current_stage(), setup])
             assert not self.failure
+            return self.result
         def t(setup, outcome):
             self.accumulator.append(["TEARDOWN", current_coordinates(), current_stage(), setup, outcome])
-        self.coordinates = CaseCoordinates("mock_module", "mock_name")
+        self.coordinates = CaseCoordinates(ModuleName.of("mock_module"), "mock_name", 123)
         self.case = SimpleThinkingCase(self.coordinates, s, b, t)
 
     def test_default_aspects_with_success(self):
@@ -43,13 +48,14 @@ class TestCaseAspects(TestCase):
         self.accumulator = []
         with self.weaver.around(TestStage.RUN, self.case):
             o = self.case.run_body(s)
-        self.assertIsInstance(o, Outcome.Success)
+        self.assertEqual(o, self.result)
         #todo add returned value, assert on resutl
         self.assertEqual([["BODY", self.coordinates, TestStage.RUN, self.setup]], self.accumulator)
         self.accumulator = []
+        success = Outcome.Success()
         with self.weaver.around(TestStage.TEARDOWN, self.case):
-            self.case.tear_down(s, o)
-        self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, o]], self.accumulator)
+            self.case.tear_down(s, success)
+        self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, success]], self.accumulator)
 
 
     def test_default_aspects_with_failure(self):
@@ -59,11 +65,10 @@ class TestCaseAspects(TestCase):
         self.assertEqual([["SETUP", self.coordinates, TestStage.SETUP]], self.accumulator)
         self.accumulator = []
         with self.weaver.around(TestStage.RUN, self.case):
-            o = self.case.run_body(s)
-        self.assertIsInstance(o, Outcome.Failure)
-        #todo assert on the exception
+            self.assertRaises(AssertionError, lambda: self.case.run_body(s))
         self.assertEqual([["BODY", self.coordinates, TestStage.RUN, self.setup]], self.accumulator)
         self.accumulator = []
+        failure = Outcome.Failure(Exception())
         with self.weaver.around(TestStage.TEARDOWN, self.case):
-            self.case.tear_down(s, o)
-        self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, o]], self.accumulator)
+            self.case.tear_down(s, failure)
+        self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, failure]], self.accumulator)

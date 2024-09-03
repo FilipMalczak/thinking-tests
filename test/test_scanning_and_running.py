@@ -1,10 +1,12 @@
 from unittest import TestCase, skip
 
+from thinking_modules.model import ModuleName
+
 import test.fixture
 from thinking_tests.current import current_case
 from thinking_tests.decorators import case
 from thinking_tests.protocol import CaseCoordinates
-from thinking_tests.start import run_current_module, run_all
+from thinking_tests.running.start import run_current_module, run_all
 
 
 @case
@@ -22,11 +24,9 @@ class TestDiscovery(TestCase):
         result = run_current_module()
         self.assertEqual(2, result.testsRun)
         self.assertEqual(
-            [
-                CaseCoordinates(__name__, "case1"),
-                CaseCoordinates(__name__, "case2")
-                # CaseCoordinates(__name__, "case1", 10),
-                # CaseCoordinates(__name__, "case2", 15)
+            [ #keep line numbers aligned with code
+                CaseCoordinates(ModuleName.of(__name__), "case1", 12),
+                CaseCoordinates(ModuleName.of(__name__), "case2", 17)
             ],
             test.fixture.accumulator
         )

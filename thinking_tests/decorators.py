@@ -1,3 +1,4 @@
+import inspect
 from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -5,6 +6,8 @@ from functools import wraps
 from logging import getLogger
 from os.path import basename
 from typing import Callable, NamedTuple
+
+from thinking_modules.model import ModuleName
 
 from thinking_tests.fluent_decorator import fluent_decorator
 from thinking_tests.protocol import ThinkingCase, CaseCoordinates
@@ -48,11 +51,13 @@ def teardown(impl: Callable):
     finally:
         CURRENT_TEARDOWN = previous
 
-# def _lineno(foo):
-#     try:
-#         return foo.__code__.co_firstlineno
-#     except:
-#         return None
+def _lineno(foo):
+    try:
+        _, lineno = inspect.getsourcelines(foo)
+        return lineno
+        # return foo.__code__.co_firstlineno
+    except:
+        return None
 
 @fluent_decorator
 def case(name=None, *, setup=None, teardown=None):
@@ -62,7 +67,7 @@ def case(name=None, *, setup=None, teardown=None):
         setup = setup or CURRENT_SETUP
         teardown = teardown or CURRENT_TEARDOWN
         case = SimpleThinkingCase(
-            CaseCoordinates(f.__module__, name),
+            CaseCoordinates(ModuleName.of(f), name, _lineno(f)),
             setup,
             f,
             teardown

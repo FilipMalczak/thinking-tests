@@ -1,8 +1,9 @@
-from unittest import TestCase, FunctionTestCase
+from unittest import TestCase
 
 from thinking_tests.aspect.weaving import AspectWeaver
 from thinking_tests.outcome import Outcome
 from thinking_tests.protocol import ThinkingCase, Setup, TestStage
+
 
 class ThinkingAdapter(TestCase):
     def __init__(self, case: ThinkingCase):
@@ -30,9 +31,7 @@ class ThinkingAdapter(TestCase):
     def tearDown(self):
         self.last_stage = TestStage.TEARDOWN
         with self.aspect.around(TestStage.TEARDOWN, self.case):
-            self.teardown_outcome = self.case.tear_down(self.setup, self.body_outcome)
-            if isinstance(self.teardown_outcome, Outcome.Failure):
-                self.teardown_outcome.reraise()
+            self.case.tear_down(self.setup, self.body_outcome)
 
     def __str__(self):
         return f"ThinkingAdapter(case={self.case}, last_stage={self.last_stage})"

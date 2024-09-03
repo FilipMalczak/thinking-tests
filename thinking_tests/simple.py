@@ -1,9 +1,12 @@
 import inspect
-from dataclasses import dataclass
+from collections import defaultdict
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from typing import Callable, TypeVar, get_type_hints
 
+from thinking_tests.current import current_stage
 from thinking_tests.outcome import Outcome, ResultType
-from thinking_tests.protocol import ThinkingCase, Setup, CaseCoordinates
+from thinking_tests.protocol import ThinkingCase, Setup, CaseCoordinates, StageExecutionDetails, TestStage
 
 T = TypeVar("T")
 
@@ -21,27 +24,37 @@ class SimpleThinkingCase(ThinkingCase):
     body: Callable[[...], ResultType]
     teardown: Callable[[...], Outcome | ResultType]
 
+    execution_details: dict[TestStage, StageExecutionDetails] = field(default_factory=lambda: defaultdict(StageExecutionDetails))
+
     def set_up(self) -> Setup:
-        return self.setup()
+        with self._store_exceptions(TestStage.SETUP):
+            return self.setup()
 
 
     def run_body(self, setup: Setup) -> Outcome:
         args = _describe_args(self.body)
 
         bound = _bind_args(args, {"setup": setup})
-        try:
-            out = self.body(*bound)
-            return Outcome.Result(out)
-        except BaseException as e:
-            return Outcome.Failure(e)
+        with self._store_exceptions(TestStage.RUN):
+            return self.body(*bound)
+
 
     def tear_down(self, setup: Setup, outcome: Outcome) -> Outcome:
-        args = _describe_args(self.teardown)
-        bound = _bind_args(args, {"setup": setup, "outcome": outcome})
-        result = self.teardown(*bound)
-        if result is None: return outcome
-        if isinstance(result, Outcome): return result
-        return outcome
+        with self._store_exceptions(TestStage.TEARDOWN):
+            args = _describe_args(self.teardown)
+            bound = _bind_args(args, {"setup": setup, "outcome": outcome})
+            result = self.teardown(*bound)
+            if result is None: return outcome
+            if isinstance(result, Outcome): return result
+            return outcome
+
+    @contextmanager
+    def _store_exceptions(self, stage):
+        try:
+            yield
+        except Exception as e:
+            self.execution_details[stage].exception = e
+            raise
 
 
 
