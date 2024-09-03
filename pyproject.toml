@@ -14,9 +14,12 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["test", "thinking"]
+keywords = ["thinking", "test", "unittest", "junit", "report", "coverage"]
 dependencies = [
-    "thinking-modules>=0.0.3"
+    "thinking-modules>=0.0.4",
+    "thinking-runtime>=0.0.3",
+    "coverage>=7.6.1",
+    "jinja2>3.1.4"
 ]
 requires-python = ">=3.12"
 
@@ -24,7 +27,9 @@ requires-python = ">=3.12"
 Homepage = "https://github.com/FilipMalczak/thinking-tests"
 
 
-#TODO make sure that vjunit template.html gets packaged
 [tool.setuptools]
 #todo remember to keep this up to date
-packages = ["thinking_tests", "thinking_tests.aspect", "thinking_tests.runner"]
+packages = ["thinking_tests", "thinking_tests.aspect", "thinking_tests.runner", "thinking_tests.running", "thinking_tests.forks"]
+
+[tool.setuptools.package-data]
+"thinking_tests.forks" = ["*.html"]

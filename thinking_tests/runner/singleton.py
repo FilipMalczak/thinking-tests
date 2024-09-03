@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 
-from thinking_tests.protocol import ThinkingCase
 from thinking_tests.runner.default_impl import default_runner
 from thinking_tests.runner.protocol import ThinkingTestRunner
 

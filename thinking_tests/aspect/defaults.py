@@ -3,7 +3,7 @@ from contextlib import contextmanager, redirect_stdout, redirect_stderr
 from datetime import datetime
 from io import StringIO
 from logging import getLogger
-from typing import ContextManager, Protocol
+from typing import ContextManager
 
 from thinking_tests.aspect.protocol import TestAspect
 from thinking_tests.current import test_stage

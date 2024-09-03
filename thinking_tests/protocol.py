@@ -2,7 +2,7 @@ from abc import abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum, auto
-from typing import Protocol, TypeVar, NamedTuple, runtime_checkable, TypedDict, Self, Optional, Any
+from typing import Protocol, TypeVar, NamedTuple, runtime_checkable, Self, Optional, Any
 
 from thinking_modules.model import ModuleName
 

@@ -13,9 +13,9 @@ the same treatment.
 """
 
 import os
+import xml.etree.ElementTree as ET
 
 import jinja2
-import xml.etree.ElementTree as ET
 
 
 class VJunit(object):

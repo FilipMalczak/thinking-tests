@@ -10,21 +10,12 @@ Major changes are:
 the same treatment.
 """
 
-import warnings
-from collections import defaultdict
-import sys
 import re
-import xml.etree.ElementTree as ET
+import sys
+import warnings
 import xml.dom.minidom
-
-from six import u, iteritems, PY2
-
-try:
-    # Python 2
-    unichr
-except NameError:  # pragma: nocover
-    # Python 3
-    unichr = chr
+import xml.etree.ElementTree as ET
+from collections import defaultdict
 
 """
 Based on the understanding of what Jenkins can parse for JUnit XML files.
@@ -69,19 +60,8 @@ def decode(var, encoding):
     """
     If not already unicode, decode it.
     """
-    if PY2:
-        if isinstance(var, unicode):  # noqa: F821
-            ret = var
-        elif isinstance(var, str):
-            if encoding:
-                ret = var.decode(encoding)
-            else:
-                ret = unicode(var)  # noqa: F821
-        else:
-            ret = unicode(var)  # noqa: F821
-    else:
-        ret = str(var)
-    return ret
+    #fixme leftover after forking, it was aligned to p2 as well as p3
+    return str(var)
 
 
 class TestSuite(object):
@@ -336,7 +316,7 @@ def to_xml_report_string(test_suites, prettyprint=True, encoding=None):
         for key in ["time"]:
             attributes[key] += float(ts_xml.get(key, 0))
         xml_element.append(ts_xml)
-    for key, value in iteritems(attributes):
+    for key, value in attributes.items():
         xml_element.set(key, str(value))
 
     xml_string = ET.tostring(xml_element, encoding=encoding)
@@ -372,7 +352,7 @@ def _clean_illegal_xml_chars(string_to_clean):
     @see: http://stackoverflow.com/questions/1707890/fast-way-to-filter-illegal-xml-unicode-chars-in-python
     """
 
-    illegal_unichrs = [
+    illegal_chrs = [
         (0x00, 0x08),
         (0x0B, 0x1F),
         (0x7F, 0x84),
@@ -398,9 +378,9 @@ def _clean_illegal_xml_chars(string_to_clean):
         (0x10FFFE, 0x10FFFF),
     ]
 
-    illegal_ranges = ["%s-%s" % (unichr(low), unichr(high)) for (low, high) in illegal_unichrs if low < sys.maxunicode]
+    illegal_ranges = ["%s-%s" % (chr(low), chr(high)) for (low, high) in illegal_chrs if low < sys.maxunicode]
 
-    illegal_xml_re = re.compile(u("[%s]") % u("").join(illegal_ranges))
+    illegal_xml_re = re.compile("[%s]" % "".join(illegal_ranges))
     return illegal_xml_re.sub("", string_to_clean)
 
 

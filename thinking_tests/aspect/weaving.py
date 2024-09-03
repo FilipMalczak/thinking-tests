@@ -1,5 +1,5 @@
 from contextlib import contextmanager, ExitStack
-from typing import Callable, NamedTuple, ContextManager
+from typing import ContextManager
 
 from thinking_tests.aspect.custom import CUSTOM_ASPECTS
 from thinking_tests.aspect.defaults import DEFAULT_ASPECTS

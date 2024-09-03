@@ -3,7 +3,6 @@ from typing import Callable
 
 from thinking_modules.model import ModuleName
 from thinking_modules.scan import scan
-from thinking_runtime.bootstrap import bootstrap
 
 from thinking_tests.decorators import KNOWN_CASES
 from thinking_tests.protocol import ThinkingCase

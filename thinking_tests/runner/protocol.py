@@ -7,7 +7,6 @@ from coverage import Coverage
 
 import thinking_tests.forks.junit_xml as junit_xml
 from thinking_tests.forks.vjunit import VJunit
-
 from thinking_tests.protocol import ThinkingCase, ThinkingSuite, TestStage, ResultType
 from thinking_tests.running.test_config import test_config
 

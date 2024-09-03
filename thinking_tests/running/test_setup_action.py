@@ -1,4 +1,4 @@
-from os.path import abspath, basename, join, dirname
+from os.path import abspath, join, dirname
 
 from coverage import Coverage
 from thinking_modules.main_module import main_module

@@ -2,9 +2,8 @@ import inspect
 from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Callable, TypeVar, get_type_hints
+from typing import Callable, TypeVar
 
-from thinking_tests.current import current_stage
 from thinking_tests.outcome import Outcome, ResultType
 from thinking_tests.protocol import ThinkingCase, Setup, CaseCoordinates, StageExecutionDetails, TestStage
 

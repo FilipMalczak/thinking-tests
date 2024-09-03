@@ -1,11 +1,8 @@
 from unittest import TextTestRunner, TestSuite, TestResult, TestCase
 
-from xmlrunner import XMLTestRunner
-
 from thinking_tests.adapter import adapt
 from thinking_tests.protocol import ThinkingCase
 from thinking_tests.runner.protocol import ThinkingTestRunner, ThinkingSuite
-from thinking_tests.running.test_config import test_config
 
 
 class UnittestRunner(ThinkingTestRunner):
