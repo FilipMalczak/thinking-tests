@@ -1,7 +1,9 @@
 from os.path import abspath, join, dirname
 
 from coverage import Coverage
+from fluent_container.traits import any_enabled
 from thinking_modules.main_module import main_module
+from thinking_runtime.defaults.recognise_runtime import current_runtime, PROFILING, DEBUG
 from thinking_runtime.model import BootstrapAction, ConfigurationRequirement
 
 from thinking_tests.running.test_config import test_config
@@ -25,6 +27,10 @@ def _against_repo_root(p: str) -> str:
 COVERAGE = None
 
 class SetupTests(BootstrapAction):
+    def prepare(self) -> None:
+        if any_enabled(current_runtime().facets.by_name.find(DEBUG, PROFILING)):
+            test_config.coverage.enabled = False
+
     def requirements(self) -> list[ConfigurationRequirement]:
         return [ ConfigurationRequirement(["__test__", "__tests__", "__testing__"]) ]
 
