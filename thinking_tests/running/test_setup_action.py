@@ -28,7 +28,7 @@ COVERAGE = None
 
 class SetupTests(BootstrapAction):
     def prepare(self) -> None:
-        if any_enabled(current_runtime().facets.by_name.find(DEBUG, PROFILING)):
+        if current_runtime().facets.by_name.find(DEBUG, PROFILING):
             test_config.coverage.enabled = False
 
     def requirements(self) -> list[ConfigurationRequirement]:
