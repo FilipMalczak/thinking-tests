@@ -47,6 +47,7 @@ class SetupTests(BootstrapAction):
             test_config.coverage.binary_report_path = _against_repo_root(test_config.coverage.binary_report_path)
             COVERAGE = Coverage(
                 test_config.coverage.binary_report_path,
+                source=[_repo_root_dir()],
                 check_preimported=True,
                 include=test_config.coverage.include,
                 omit=test_config.coverage.omit,
