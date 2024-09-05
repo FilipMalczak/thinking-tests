@@ -1,7 +1,6 @@
 from os.path import abspath, join, dirname
 
 from coverage import Coverage
-from fluent_container.traits import any_enabled
 from thinking_modules.main_module import main_module
 from thinking_runtime.defaults.recognise_runtime import current_runtime, PROFILING, DEBUG
 from thinking_runtime.model import BootstrapAction, ConfigurationRequirement
