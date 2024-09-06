@@ -62,8 +62,21 @@ class ThinkingTestRunner:
             if p is not None:
                 out.package = p.qualified
             return out
+        FLATTEN = True
+        REMOVE_EMPTY = True
+        #todo make these configurable
+        suites = [ suite ]
+        if FLATTEN:
+            def walk(s):
+                yield s
+                for ss in s.suites:
+                    yield from walk(ss)
+            suites = [ x for s in suites for x in walk(s) ]
+        if REMOVE_EMPTY:
+            suites = [ s for s in suites if s.tests ]
+        xsuites = [ xsuite(s) for s in suites ]
         with open(report_path, "w") as f:
-            junit_xml.to_xml_report_file(f, [xsuite(suite)])
+            junit_xml.to_xml_report_file(f, xsuites)
 
     @contextmanager
     def _noop(self):
