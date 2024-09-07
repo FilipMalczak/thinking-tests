@@ -62,9 +62,11 @@ class ThinkingTestRunner:
             if p is not None:
                 out.package = p.qualified
             return out
+
+        # todo make these configurable
         FLATTEN = True
-        REMOVE_EMPTY = True
-        #todo make these configurable
+        REMOVE_EMPTY = False
+
         suites = [ suite ]
         if FLATTEN:
             def walk(s):
