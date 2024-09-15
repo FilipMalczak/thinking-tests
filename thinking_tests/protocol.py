@@ -88,6 +88,8 @@ class ThinkingCase(Protocol):
 
     @property
     def error_exception(self) -> Optional[Exception]:
+        #todo run non-assert exception should be error, not failure
+        # so there can be more than one error exception
         return self.execution_details[TestStage.SETUP].exception or self.execution_details[TestStage.TEARDOWN].exception
 
     @property
