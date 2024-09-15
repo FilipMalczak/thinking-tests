@@ -3,7 +3,7 @@
 [![CI](https://github.com/FilipMalczak/thinking-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/FilipMalczak/thinking-tests/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/thinking-tests.svg)](https://badge.fury.io/py/thinking-tests)
 
-> Part of [thinking](https://github.com/search?q=owner%3AFilipMalczak+thinking&type=repositories) family.
+> Part of [thinking](https://github.com/FilipMalczak/thinking-rationale) family.
 
 Declarative API over unittest with customizable auto-discovery and test lifecycle.
 
