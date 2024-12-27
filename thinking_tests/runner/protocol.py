@@ -12,6 +12,9 @@ from thinking_tests.running.test_config import test_config
 
 BackendResultType = TypeVar("BackendResultType")
 
+def escape_xml_brackets(txt: str) -> str:
+    return txt.replace("<", "&lt;").replace(">", "&gt;")
+
 class ThinkingTestRunner:
     @abstractmethod
     def execute_suite(self, cases: ThinkingSuite) -> BackendResultType: pass
@@ -34,12 +37,12 @@ class ThinkingTestRunner:
                 case.coordinates.id,
                 case.coordinates.module_name.qualified+"."+case.coordinates.name,
                 case.duration.total_seconds(),
-                case.stdout,
-                case.stderr,
+                escape_xml_brackets(case.stdout),
+                escape_xml_brackets(case.stderr),
                 timestamp=case.execution_details[TestStage.SETUP].started_at,
                 file=case.coordinates.module_name.module_descriptor.file_path,
                 line=case.coordinates.lineno,
-                log=case.logs
+                log=escape_xml_brackets(case.logs)
             )
             def _exc_to_info(e):
                 return repr(e), traceback.format_exception(e), type(e).__name__
