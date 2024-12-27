@@ -34,8 +34,8 @@ class ThinkingTestRunner:
     def _prepare_xml_report(self, suite: ThinkingSuite, report_path: str):
         def xcase(case: ThinkingCase) -> junit_xml.TestCase:
             out = junit_xml.TestCase(
-                case.coordinates.id,
-                case.coordinates.module_name.qualified+"."+case.coordinates.name,
+                escape_xml_brackets(case.coordinates.id),
+                escape_xml_brackets(case.coordinates.module_name.qualified+"."+case.coordinates.name),
                 case.duration.total_seconds(),
                 escape_xml_brackets(case.stdout),
                 escape_xml_brackets(case.stderr),
