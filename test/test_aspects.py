@@ -42,33 +42,33 @@ class TestCaseAspects(TestCase):
         self.case = SimpleThinkingCase(self.coordinates, s, b, t)
 
     def test_default_aspects_with_success(self):
-        with self.weaver.around(TestStage.SETUP, self.case):
+        with self.weaver.around_case(TestStage.SETUP, self.case):
             s = self.case.set_up()
         self.assertEqual([["SETUP", self.coordinates, TestStage.SETUP]], self.accumulator)
         self.accumulator = []
-        with self.weaver.around(TestStage.RUN, self.case):
+        with self.weaver.around_case(TestStage.RUN, self.case):
             o = self.case.run_body(s)
         self.assertEqual(o, self.result)
         #todo add returned value, assert on resutl
         self.assertEqual([["BODY", self.coordinates, TestStage.RUN, self.setup]], self.accumulator)
         self.accumulator = []
         success = Outcome.Success()
-        with self.weaver.around(TestStage.TEARDOWN, self.case):
+        with self.weaver.around_case(TestStage.TEARDOWN, self.case):
             self.case.tear_down(s, success)
         self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, success]], self.accumulator)
 
 
     def test_default_aspects_with_failure(self):
         self.failure = True
-        with self.weaver.around(TestStage.SETUP, self.case):
+        with self.weaver.around_case(TestStage.SETUP, self.case):
             s = self.case.set_up()
         self.assertEqual([["SETUP", self.coordinates, TestStage.SETUP]], self.accumulator)
         self.accumulator = []
-        with self.weaver.around(TestStage.RUN, self.case):
+        with self.weaver.around_case(TestStage.RUN, self.case):
             self.assertRaises(AssertionError, lambda: self.case.run_body(s))
         self.assertEqual([["BODY", self.coordinates, TestStage.RUN, self.setup]], self.accumulator)
         self.accumulator = []
         failure = Outcome.Failure(Exception())
-        with self.weaver.around(TestStage.TEARDOWN, self.case):
+        with self.weaver.around_case(TestStage.TEARDOWN, self.case):
             self.case.tear_down(s, failure)
         self.assertEqual([["TEARDOWN", self.coordinates, TestStage.TEARDOWN, self.setup, failure]], self.accumulator)

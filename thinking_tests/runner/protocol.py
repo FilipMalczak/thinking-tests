@@ -6,6 +6,7 @@ from typing import TypeVar
 from coverage import Coverage
 
 import thinking_tests.forks.junit_xml as junit_xml
+from thinking_tests.aspect.weaving import WEAVER
 from thinking_tests.forks.vjunit import VJunit
 from thinking_tests.protocol import ThinkingCase, ThinkingSuite, TestStage, ResultType
 from thinking_tests.running.test_config import test_config
@@ -18,6 +19,10 @@ def escape_xml_brackets(txt: str) -> str:
 class ThinkingTestRunner:
     @abstractmethod
     def execute_suite(self, cases: ThinkingSuite) -> BackendResultType: pass
+
+    def run_suite(self, cases: ThinkingSuite) -> BackendResultType:
+        with WEAVER.around_suite(cases):
+            self.execute_suite(cases)
 
     def execute(self, cases: list[ThinkingCase]) -> BackendResultType:
         suite = ThinkingSuite.build(cases)

@@ -44,7 +44,8 @@ def run_all(predicate: Callable[[ThinkingCase], bool] = None,
             log.info(f"Importing {mod.qualified}")
             m = mod.module_descriptor.module_object
             log.info(f"Imported {m}")
-    return execute(sorter([x for x in KNOWN_CASES if predicate(x)]))
+    suite = sorter([x for x in KNOWN_CASES if predicate(x)])
+    return execute(suite)
 
 
 def run_current_module(predicate: Callable[[ThinkingCase], bool] = None,

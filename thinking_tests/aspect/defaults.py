@@ -13,14 +13,14 @@ from thinking_tests.running.capture_logs import LogCapturer
 
 class MetadataMountingAspect(TestAspect):
     @contextmanager
-    def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
+    def around_case(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
         with test_stage(case.coordinates, stage):
             yield
 
 
 class DetailsCapturingAspect(TestAspect):
     @contextmanager
-    def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
+    def around_case(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
         exec_details = case.execution_details[stage]
         stdout = StringIO()
         stderr = StringIO()
@@ -40,8 +40,6 @@ class DetailsCapturingAspect(TestAspect):
                 stderr.close()
                 exec_details.logs = LogCapturer.INSTANCE.get_data()
                 LogCapturer.INSTANCE.reset()
-        # if stage == TestStage.TEARDOWN:
-        #     case.execution_details = dict(case.execution_details)
 
 
 class LogFormatter:
@@ -88,7 +86,7 @@ BEFORE_AFTER_LOG_FORMATER = LogFormatter()
 
 class LoggingAspect(TestAspect):
     @contextmanager
-    def around(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
+    def around_case(self, stage: TestStage, case: ThinkingCase) -> ContextManager:
         logger = getLogger(case.coordinates.module_name.qualified)
         fmt = BEFORE_AFTER_LOG_FORMATER
         try:

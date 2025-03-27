@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from thinking_tests.aspect.weaving import AspectWeaver
+from thinking_tests.aspect.weaving import AspectWeaver, WEAVER
 from thinking_tests.outcome import Outcome
 from thinking_tests.protocol import ThinkingCase, Setup, TestStage
 
@@ -11,7 +11,6 @@ class ThinkingAdapter(TestCase):
         self.setup: Setup = None
         self.body_outcome: Outcome = None
         self.teardown_outcome: Outcome = None
-        self.aspect = AspectWeaver()
         self.last_stage: TestStage = None
         TestCase.__init__(self)
 
@@ -20,17 +19,17 @@ class ThinkingAdapter(TestCase):
 
     def setUp(self):
         self.last_stage = TestStage.SETUP
-        with self.aspect.around(TestStage.SETUP, self.case):
+        with WEAVER.around_case(TestStage.SETUP, self.case):
             self.setup = self.case.set_up()
 
     def runTest(self):
         self.last_stage = TestStage.RUN
-        with self.aspect.around(TestStage.RUN, self.case):
+        with WEAVER.around_case(TestStage.RUN, self.case):
             self.body_outcome = self.case.run_body(self.setup)
 
     def tearDown(self):
         self.last_stage = TestStage.TEARDOWN
-        with self.aspect.around(TestStage.TEARDOWN, self.case):
+        with WEAVER.around_case(TestStage.TEARDOWN, self.case):
             self.case.tear_down(self.setup, self.body_outcome)
 
     def __str__(self):
