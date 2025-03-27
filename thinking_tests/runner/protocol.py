@@ -22,18 +22,20 @@ class ThinkingTestRunner:
 
     def run_suite(self, cases: ThinkingSuite) -> BackendResultType:
         with WEAVER.around_suite(cases):
-            self.execute_suite(cases)
+            return self.execute_suite(cases)
 
     def execute(self, cases: list[ThinkingCase]) -> BackendResultType:
         suite = ThinkingSuite.build(cases)
+        #todo coverage could be extracted as aspect (maybe)
         ctx = self._coverage() if test_config.coverage.enabled else self._noop()
         with ctx:
-            result = self.execute_suite(suite)
+            result = self.run_suite(suite)
+        #fixme this stuff could be aspects too
         if test_config.unittest.xml_report_enabled:
             self._prepare_xml_report(suite, test_config.unittest.xml_report_path)
         if test_config.unittest.html_report_enabled:
             VJunit().convert(test_config.unittest.xml_report_path, test_config.unittest.html_report_path)
-        #todo html report
+        #todo html report (I dont think its still a todo though)
         return result
 
     def _prepare_xml_report(self, suite: ThinkingSuite, report_path: str):
